@@ -1,10 +1,10 @@
 {
   "name": "eventcenter",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Watches one or more EventEmitters and emits the \"event\" event on every event the EventEmitter fires",
   "main": "index.js",
   "directories": {
-    "test": "tests"
+    "test": "test"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
