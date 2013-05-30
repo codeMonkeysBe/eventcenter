@@ -4,20 +4,13 @@ var assert = require('assert'),
 
 var e = new events.EventEmitter();
 
-
-/*
- * Invalid parameter ( watch excpects an instanceof EventEmitter
- */
 assert.throws( function() { 
     eventcenter.watch('notaneventemitter');
-});
+}, "It is not allowed to accept anything other than an EventEmitter instance");
 
-/*
- * Can't listen to the same emitter twice
- */
 assert.throws( function() { 
     eventcenter.watch(e);
     eventcenter.watch(e);
-});
+}, "It is not allowed to listen to the same EventEmitter twice");
 
 

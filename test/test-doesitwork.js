@@ -27,7 +27,10 @@ events.forEach(function(eventName, i){
 /*
  * Watch the events with the eventcenter
  */
-eventcenter.watch(e);
+assert.doesNotThrow( function() { 
+    eventcenter.watch(e);
+}, "The eventcenter should accept an EventEmitter instance as watch parameter");
+
 
 eventcenter.on('event', function(eventName){
         center_events_handled.push(eventName);
