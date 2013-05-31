@@ -96,14 +96,13 @@ EventCenter.prototype._createNamespace = function(namespace){
 
 EventCenter.prototype._addToNamespace = function( eventEmitter, namespace ){
 
-
     var that = this;
 
     /*
      * Have we added this eventEmitter before ?
      */
     var isNotAddedBefore = that._eventEmitters[namespace].every( function( e ){
-        return e.eventEmitter !== eventEmitter ;
+        return e !== eventEmitter ;
     });
 
     if ( isNotAddedBefore ){
