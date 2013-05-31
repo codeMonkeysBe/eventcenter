@@ -36,7 +36,7 @@ util.inherits(EventCenter, events.EventEmitter);
 /*
  * Listen to all events an EventEmitter instance emits.
  */
-EventCenter.prototype.watch = function( eventEmitter ){
+EventCenter.prototype.watch = function( eventEmitter, namespace ){
     
     var that = this;
     var emitterId ;
@@ -53,14 +53,14 @@ EventCenter.prototype.watch = function( eventEmitter ){
     /*
      * Add the EventEmitter to our local list of listened too event emitters
      */
-    emitterId = that._add( eventEmitter ).id;
+    emitterId = that._add( eventEmitter, namespace ).id;
 
     /*
      * We added our emitter to our emitter list.
      * Next, we listen to all events the emitter can emit
      */
     if( emitterId ){
-        that._listenTo( eventEmitter, emitterId );
+        that._listenTo( eventEmitter, namespace, emitterId );
     }
 
     /*
@@ -71,26 +71,36 @@ EventCenter.prototype.watch = function( eventEmitter ){
 };
 
 
-EventCenter.prototype._add = function( eventEmitter ){
+EventCenter.prototype._add = function( eventEmitter, namespace ){
 
     var that = this;
+    var collectionItem;
+
+    namespace = namespace || 'default';
+
+    /*
+     * Does the namespace already exits?
+     */
+    if( that._eventEmitters[namespace] === undefined ){
+        that._eventEmitters[namespace] = [];
+    }
 
     /*
      * Have we added this eventEmitter before ?
      */
-    var isNotAddedBefore = that._eventEmitters.every( function( e ){
-        return e !== eventEmitter ;
+    var isNotAddedBefore = that._eventEmitters[namespace].every( function( e ){
+        return e.eventEmitter !== eventEmitter ;
     });
 
     if ( isNotAddedBefore ){
-        return { id: that._eventEmitters.push( eventEmitter ) };
+        return { id: that._eventEmitters[namespace].push( eventEmitter ) };
     }
 
-    throw new Error("Emitter already added") ;
+    throw new Error("Emitter already added in namespace") ;
     
 };
 
-EventCenter.prototype._listenTo = function( eventEmitter, emitterId ){
+EventCenter.prototype._listenTo = function( eventEmitter, namespace, emitterId ){
 
     var that = this;
     var availableEvents, eventName; 
@@ -113,16 +123,15 @@ EventCenter.prototype._listenTo = function( eventEmitter, emitterId ){
          * When an event is fired by the emitter, 
          * report back with an "event" event.
          */
-        eventEmitter.on(eventName, function(eventName, emitterId){
+        eventEmitter.on(eventName, function(eventName, namespace, emitterId){
 
             return function(){
-                that.emit("event", eventName, emitterId);
+                that.emit("event", eventName, namespace, emitterId);
             };
 
-        }(eventName, emitterId));
+        }(eventName, namespace, emitterId));
 
     }
-
 
 }
 
