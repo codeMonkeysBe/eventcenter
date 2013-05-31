@@ -73,6 +73,7 @@ EventCenter.prototype.watch = function( eventEmitter, namespace ){
 
 EventCenter.prototype._add = function( eventEmitter, namespace ){
 
+
     var that = this;
     var collectionItem;
 
@@ -84,6 +85,7 @@ EventCenter.prototype._add = function( eventEmitter, namespace ){
     if( that._eventEmitters[namespace] === undefined ){
         that._eventEmitters[namespace] = [];
     }
+
 
     /*
      * Have we added this eventEmitter before ?
@@ -99,6 +101,7 @@ EventCenter.prototype._add = function( eventEmitter, namespace ){
     throw new Error("Emitter already added in namespace") ;
     
 };
+
 
 EventCenter.prototype._listenTo = function( eventEmitter, namespace, emitterId ){
 
