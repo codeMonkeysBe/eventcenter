@@ -131,6 +131,7 @@ EventCenter.prototype._listenTo = function( eventEmitter, namespace, emitterId, 
         eventEmitter.on( eventName, (function(eventName, namespace, emitterId){
                 return function(){
                     that.emit("event", eventName, namespace, emitterId);
+                    that.emit(namespace, eventName, namespace,  emitterId);
                 };
             }(eventName, namespace, emitterId) )
         );
