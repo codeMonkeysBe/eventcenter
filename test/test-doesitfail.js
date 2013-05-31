@@ -5,12 +5,12 @@ var assert = require('assert'),
 var e = new events.EventEmitter();
 
 assert.throws( function() { 
-    eventcenter.watch('notaneventemitter');
+    eventcenter.connect('notaneventemitter');
 }, "It is not allowed to accept anything other than an EventEmitter instance");
 
 assert.throws( function() { 
-    eventcenter.watch(e);
-    eventcenter.watch(e);
+    eventcenter.connect(e, ['testevent']);
+    eventcenter.connect(e, ['testevent']);
 }, "It is not allowed to listen to the same EventEmitter twice");
 
 

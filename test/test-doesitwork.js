@@ -28,12 +28,12 @@ events.forEach(function(eventName, i){
  * Watch the events with the eventcenter
  */
 assert.doesNotThrow( function() { 
-    eventcenter.watch(e);
-}, "The eventcenter should accept an EventEmitter instance as watch parameter");
+    eventcenter.connect(e, events);
+}, "The eventcenter should accept an EventEmitter instance as connect parameter");
 
 
 eventcenter.on('event', function(eventName){
-        center_events_handled.push(eventName);
+    center_events_handled.push(eventName);
 });
 
 

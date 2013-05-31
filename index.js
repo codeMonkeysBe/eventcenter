@@ -36,31 +36,36 @@ util.inherits(EventCenter, events.EventEmitter);
 /*
  * Listen to all events an EventEmitter instance emits.
  */
-EventCenter.prototype.watch = function( eventEmitter, namespace ){
+EventCenter.prototype.connect = function( eventEmitter, eventsArray, namespace ){
     
     var that = this;
     var emitterId ;
 
-    /*
-     * If we aren't receiving an EventEmitter we emit an error
-     */
     if ( !(eventEmitter instanceof events.EventEmitter ) ) {
-
-        throw new Error("Expected instanceof events.EventEmitter") ;
-
+        throw new Error(
+            "Expected first argument to be instanceof events.EventEmitter"
+        ) ;
     }
+    
+    if ( !(eventsArray instanceof Array ) ) {
+        throw new Error(
+            "Expected second argument to be instanceof Array"
+        ) ;
+    }
+
+    namespace = this._createNamespace(namespace);
 
     /*
      * Add the EventEmitter to our local list of listened too event emitters
      */
-    emitterId = that._add( eventEmitter, namespace ).id;
+    emitterId = that._addToNamespace( eventEmitter, namespace ).id;
 
     /*
      * We added our emitter to our emitter list.
      * Next, we listen to all events the emitter can emit
      */
     if( emitterId ){
-        that._listenTo( eventEmitter, namespace, emitterId );
+        that._listenTo( eventEmitter, namespace, emitterId, eventsArray );
     }
 
     /*
@@ -70,12 +75,9 @@ EventCenter.prototype.watch = function( eventEmitter, namespace ){
 
 };
 
-
-EventCenter.prototype._add = function( eventEmitter, namespace ){
-
+EventCenter.prototype._createNamespace = function(namespace){
 
     var that = this;
-    var collectionItem;
 
     namespace = namespace || 'default';
 
@@ -86,6 +88,16 @@ EventCenter.prototype._add = function( eventEmitter, namespace ){
         that._eventEmitters[namespace] = [];
     }
 
+    return namespace;
+
+};
+
+
+
+EventCenter.prototype._addToNamespace = function( eventEmitter, namespace ){
+
+
+    var that = this;
 
     /*
      * Have we added this eventEmitter before ?
@@ -103,39 +115,29 @@ EventCenter.prototype._add = function( eventEmitter, namespace ){
 };
 
 
-EventCenter.prototype._listenTo = function( eventEmitter, namespace, emitterId ){
+EventCenter.prototype._listenTo = function( eventEmitter, namespace, emitterId, eventsArray ){
 
     var that = this;
-    var availableEvents, eventName; 
+    var eventName; 
 
     /*
-     * Start listening to events this emitter might emit.
+     * Loop over eventsArray and start listening to them
      */
-    availableEvents = eventEmitter._events;
 
-    /*
-     * Loop over availableEvents and start listening to them
-     */
-    for (eventName in availableEvents) {
-
-        if (!availableEvents.hasOwnProperty(eventName)) {
-            continue;
-        }
-
+    eventsArray.forEach(function(eventName){
         /*
          * When an event is fired by the emitter, 
          * report back with an "event" event.
          */
-        eventEmitter.on(eventName, function(eventName, namespace, emitterId){
+        eventEmitter.on( eventName, (function(eventName, namespace, emitterId){
+                return function(){
+                    that.emit("event", eventName, namespace, emitterId);
+                };
+            }(eventName, namespace, emitterId) )
+        );
 
-            return function(){
-                that.emit("event", eventName, namespace, emitterId);
-            };
+    });
 
-        }(eventName, namespace, emitterId));
-
-    }
-
-}
+};
 
 module.exports = new EventCenter();
