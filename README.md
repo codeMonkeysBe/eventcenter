@@ -18,7 +18,7 @@ e.on('world', function(){
     console.log('world event fired');
 });
 
-eventcenter.watch(e);
+eventcenter.connect(e, ['end']);
 
 // Whenever an event fires (any event)
 eventcenter.on('event', function(eventName){
@@ -31,6 +31,6 @@ e.emit('world');
 
 ## API
 
-### eventcenter.watch(EventEmitter)
+### eventcenter.watch(EventEmitter, ArrayWithEventsToAdmit)
 Listens to all events an instance of EventEmitter fires, then reports on those fired events
 

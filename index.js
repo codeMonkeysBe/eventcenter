@@ -122,18 +122,30 @@ EventCenter.prototype._listenTo = function( eventEmitter, namespace, emitterId, 
     /*
      * Loop over eventsArray and start listening to them
      */
-
     eventsArray.forEach(function(eventName){
+
         /*
          * When an event is fired by the emitter, 
          * report back with an "event" event.
          */
         eventEmitter.on( eventName, (function(eventName, namespace, emitterId){
+
                 return function(){
-                    that.emit("event", eventName, namespace, emitterId);
-                    that.emit(namespace, eventName, namespace,  emitterId);
+
+                    var emitObject = {
+                        event       :   eventName,
+                        namespace   :   namespace,
+                        emitter     :   emitterId,
+                        data        :   arguments
+                    };
+
+                    that.emit( "event",      emitObject );
+                    that.emit( namespace,    emitObject );
+
                 };
+
             }(eventName, namespace, emitterId) )
+
         );
 
     });

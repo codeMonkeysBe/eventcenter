@@ -21,8 +21,8 @@ eventcenter.connect(e, ['event_1', 'event_2'], 'test_namespace_1');
 
 eventcenter.connect(e, ['event_3', 'event_4'], 'test_namespace_2');
 
-eventcenter.on('event', function( eventName, namespace, emitterId){
-    eventsReceived[namespace]++;
+eventcenter.on('event', function(data){
+    eventsReceived[data.namespace]++;
 });
 
 e.emit('event_1');

@@ -27,15 +27,14 @@ events.forEach(function(eventName, i){
 /*
  * Watch the events with the eventcenter
  */
-assert.doesNotThrow( function() { 
+assert.doesNotThrow( function() {
     eventcenter.connect(e, events);
 }, "The eventcenter should accept an EventEmitter instance as connect parameter");
 
 
-eventcenter.on('event', function(eventName){
-    center_events_handled.push(eventName);
+eventcenter.on('event', function(data){
+    center_events_handled.push(data.event);
 });
-
 
 /*
  * Emit the events one by one
