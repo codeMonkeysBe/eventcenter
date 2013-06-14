@@ -10,21 +10,30 @@ var util    = require("util"),
  */
 function EventCenter( options ) {
 
+    var that = this;
+
     /*
      * Force construction with the new operator
      */
-    if (!(this instanceof EventCenter)) {
+    if (!(that instanceof EventCenter)) {
         return new EventCenter( options );
     }
+
+    /*
+     * Preparing closures for use
+     */
+    that.constructClosures();
 
     /*
      * Call events.EventEmitter constructor on the local scope 
      * (we inherit from events.EventEmitter)
      */
-    events.EventEmitter.call(this);
+    events.EventEmitter.call(that);
 
-    this.stats = [];
-    this._eventEmitters = [];
+    /*
+     * Holds a collection of eventEmitters we are subscribed to
+     */
+    that._eventEmitters = [];
 
 }
 
@@ -42,22 +51,15 @@ EventCenter.prototype.connect = function( eventEmitter, eventsArray, namespace )
     var emitterId ;
 
     if ( !(eventEmitter instanceof events.EventEmitter ) ) {
-        throw new Error(
-            "Expected first argument to be instanceof events.EventEmitter"
-        ) ;
+        throw new Error( "Expected first argument to be instanceof events.EventEmitter") ;
     }
     
     if ( !(eventsArray instanceof Array ) ) {
-        throw new Error(
-            "Expected second argument to be instanceof Array"
-        ) ;
+        throw new Error( "Expected second argument to be instanceof Array") ;
     }
 
-    namespace = this._createNamespace(namespace);
+    namespace = that._prepareNamespaceForUse(namespace);
 
-    /*
-     * Add the EventEmitter to our local list of listened too event emitters
-     */
     emitterId = that._addToNamespace( eventEmitter, namespace ).id;
 
     /*
@@ -75,7 +77,10 @@ EventCenter.prototype.connect = function( eventEmitter, eventsArray, namespace )
 
 };
 
-EventCenter.prototype._createNamespace = function(namespace){
+/*
+ * Checks if a namespace exists, if not creates the namespace
+ */
+EventCenter.prototype._prepareNamespaceForUse = function(namespace){
 
     var that = this;
 
@@ -93,13 +98,16 @@ EventCenter.prototype._createNamespace = function(namespace){
 };
 
 
-
+/*
+ * Adds an event emitter to a given namespace
+ * Throws an error when we are already listening to the eventEmitter in the given namespace
+ */
 EventCenter.prototype._addToNamespace = function( eventEmitter, namespace ){
 
     var that = this;
 
     /*
-     * Have we added this eventEmitter before ?
+     * Have we subscribed to this eventEmitter before ?
      */
     var isNotAddedBefore = that._eventEmitters[namespace].every( function( e ){
         return e !== eventEmitter ;
@@ -128,28 +136,41 @@ EventCenter.prototype._listenTo = function( eventEmitter, namespace, emitterId, 
          * When an event is fired by the emitter, 
          * report back with an "event" event.
          */
-        eventEmitter.on( eventName, (function(eventName, namespace, emitterId){
-
-                return function(){
-
-                    var emitObject = {
-                        event       :   eventName,
-                        namespace   :   namespace,
-                        emitter     :   emitterId,
-                        data        :   arguments
-                    };
-
-                    that.emit( "event",      emitObject );
-                    that.emit( namespace,    emitObject );
-
-                };
-
-            }(eventName, namespace, emitterId) )
-
-        );
+        eventEmitter.on( 
+                        eventName, 
+                        that.emitEventEvent(eventName, namespace, emitterId) 
+                       );
 
     });
 
 };
 
+
+EventCenter.prototype.constructClosures = function( ) {
+
+    var that = this;
+
+    /*
+     * Will be executed on every event we encounter
+     */
+    that.emitEventEvent = function(eventName, namespace, emitterId){
+        return function(){
+            var emitObject = {
+                event       :   eventName,  // The name of this event
+                namespace   :   namespace,  // The namespace given when this eventEmitter was connected
+                emitter     :   emitterId,  // The internal id of this emitter in the eventcenter
+                data        :   arguments   // The arguments the event emitter passes to the closure
+            };
+            that.emit( "event",      emitObject );
+            that.emit( namespace,    emitObject );
+        };
+    };
+
+};
+
+/*
+ * EXPORTS
+ */
+
 module.exports = new EventCenter();
+
