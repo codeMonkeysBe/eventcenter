@@ -22,7 +22,7 @@ function EventCenter( options ) {
     /*
      * Preparing closures for use
      */
-    that.constructClosures();
+    that._constructClosures();
 
     /*
      * Call events.EventEmitter constructor on the local scope 
@@ -146,7 +146,7 @@ EventCenter.prototype._listenTo = function( eventEmitter, namespace, emitterId, 
 };
 
 
-EventCenter.prototype.constructClosures = function( ) {
+EventCenter.prototype._constructClosures = function( ) {
 
     var that = this;
 
