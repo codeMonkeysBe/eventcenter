@@ -1,6 +1,6 @@
 {
   "name": "eventcenter",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Watches one or more EventEmitters and emits the \"event\" event on every event the EventEmitter fires",
   "main": "index.js",
   "directories": {
