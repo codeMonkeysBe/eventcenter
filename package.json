@@ -1,6 +1,6 @@
 {
   "name": "eventcenter",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Watches one or more EventEmitters and emits the \"event\" event on every event the EventEmitter fires",
   "main": "index.js",
   "directories": {
@@ -9,7 +9,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": "",
-  "author": "codeMonkeys BVBA",
-  "license": "BSD"
+  "repository": {
+      "type": "git",
+      "url": "git@github.com:codeMonkeysBe/eventcenter.git"
+  },
+  "author": {
+      "name": "codeMonkeys",
+      "url": "http://codemonkeys.be",
+      "email": "info@codemonkeys.be"
+  },
+  "contributors": [ "Niki Van Cleemput <niki@codemonkeys.be>"],
+  "license": "MIT"
 }
