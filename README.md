@@ -1,5 +1,4 @@
-# eventcenter
-
+# eventcenter 
 ## How to use
 ```js
 var events      = require('events'),
@@ -32,6 +31,6 @@ e.emit('world');
 
 ## API
 
-### eventcenter.watch(EventEmitter, ArrayWithEventsToAdmit)
+### eventcenter.connect( eventEmitter, eventsArray, namespace  )
 Listens to all events an instance of EventEmitter fires, then reports on those fired events
 
