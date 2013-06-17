@@ -10,20 +10,21 @@ var e = new events.EventEmitter();
 
 // When a hello event fires
 e.on('hello', function(){
-    console.log('hello event fired');
+    console.log('hello event emitted');
 });
 
 // When a world event fires
 e.on('world', function(){
-    console.log('world event fired');
+    console.log('world event emitted');
 });
 
-eventcenter.connect(e, ['end']);
+eventcenter.connect(e, ['world'], 'hello' );
 
 // Whenever an event fires (any event)
-eventcenter.on('event', function(eventName){
-    console.log('The eventcenter reports on the event: ' + eventName);
+eventcenter.on('event', function( e ){
+    console.log('The eventcenter reports on the event: ' + e.event, e.data);
 });
+
 
 e.emit('hello');
 e.emit('world');
