@@ -18,7 +18,7 @@ e.on('world', function(){
     console.log('world event emitted');
 });
 
-eventcenter.connect(e, ['world'], ['hello'] );
+eventcenter.connect(e, ['world', 'hello'] );
 
 // Whenever an event fires (any event)
 eventcenter.on('event', function( e ){
